@@ -1,0 +1,72 @@
+generator client { provider = "prisma-client-js" }
+
+datasource db { provider = "sqlite" url = env("DATABASE_URL") }
+
+enum UserRole { ADMIN MEMBER }
+enum ReservationStatus { RESERVED CHECKED COMPLETED CANCELED }
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  role      UserRole
+  memberId  String?  @unique
+  member    Member?  @relation(fields: [memberId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+model Member {
+  id           String        @id @default(cuid())
+  name         String
+  phone        String
+  email        String        @unique
+  memo         String?
+  user         User?
+  reservations Reservation[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+model Course {
+  id              String        @id @default(cuid())
+  name            String
+  durationMinutes Int
+  reservations    Reservation[]
+}
+
+model Reservation {
+  id         String            @id @default(cuid())
+  memberId   String
+  courseId   String
+  startsAt   DateTime
+  endsAt     DateTime
+  status     ReservationStatus @default(RESERVED)
+  note       String?
+  member     Member            @relation(fields: [memberId], references: [id])
+  course     Course            @relation(fields: [courseId], references: [id])
+  createdAt  DateTime          @default(now())
+  updatedAt  DateTime          @updatedAt
+
+  @@index([startsAt])
+}
+
+model BusinessHour {
+  id        String  @id @default(cuid())
+  dayOfWeek Int
+  isOpen    Boolean @default(true)
+  openTime  String
+  closeTime String
+
+  @@unique([dayOfWeek])
+}
+
+model ClosedDay {
+  id     String   @id @default(cuid())
+  date   DateTime @unique
+  reason String?
+}
+
+model AppSetting {
+  id                       String @id @default("singleton")
+  cancellationDeadlineHour Int    @default(24)
+}
