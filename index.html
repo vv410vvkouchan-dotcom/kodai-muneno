@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BASE GYM24 企業セミナー営業CRM</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="container">
+      <header class="header">
+        <h1>BASE GYM24 企業セミナー営業CRM</h1>
+        <p>案件の進捗をシンプルに管理</p>
+        <div class="utility-actions">
+          <button type="button" id="exportJsonBtn" class="secondary">バックアップ保存</button>
+          <label class="import-label secondary" for="importJsonInput">バックアップ読込</label>
+          <input type="file" id="importJsonInput" accept="application/json" hidden />
+        </div>
+        <p id="saveNotice" class="save-notice" aria-live="polite"></p>
+      </header>
+
+      <section class="card">
+        <h2 id="formTitle">案件登録</h2>
+        <form id="leadForm" class="form-grid">
+          <input type="hidden" id="leadId" />
+
+          <label>会社名
+            <input type="text" id="companyName" required />
+          </label>
+
+          <label>担当者名
+            <input type="text" id="contactPerson" />
+          </label>
+
+          <label>連絡先
+            <input type="text" id="contactInfo" placeholder="電話・メールなど" />
+          </label>
+
+          <label>業種
+            <input type="text" id="industry" />
+          </label>
+
+          <label>初回接触日
+            <input type="date" id="firstContactDate" />
+          </label>
+
+          <label>現在のステータス
+            <select id="status" required>
+              <option value="未接触">未接触</option>
+              <option value="アプローチ中">アプローチ中</option>
+              <option value="提案済み">提案済み</option>
+              <option value="面談設定">面談設定</option>
+              <option value="受注">受注</option>
+              <option value="失注">失注</option>
+            </select>
+          </label>
+
+          <label>提案テーマ
+            <input type="text" id="proposalTheme" />
+          </label>
+
+          <label>面談日
+            <input type="date" id="meetingDate" />
+          </label>
+
+          <label>セミナー実施日
+            <input type="date" id="seminarDate" />
+          </label>
+
+          <label>次回アクション
+            <input type="text" id="nextAction" placeholder="例：4/20に再連絡" />
+          </label>
+
+          <label class="full">メモ
+            <textarea id="memo" rows="3" placeholder="要点や注意点を記録"></textarea>
+          </label>
+
+          <div class="actions full">
+            <button type="submit" class="primary">保存する</button>
+            <button type="button" id="cancelEdit" class="secondary" hidden>編集をキャンセル</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="card">
+        <div class="toolbar">
+          <h2>案件一覧</h2>
+          <label>ステータス絞り込み
+            <select id="statusFilter">
+              <option value="all">すべて</option>
+              <option value="未接触">未接触</option>
+              <option value="アプローチ中">アプローチ中</option>
+              <option value="提案済み">提案済み</option>
+              <option value="面談設定">面談設定</option>
+              <option value="受注">受注</option>
+              <option value="失注">失注</option>
+            </select>
+          </label>
+        </div>
+        <div id="emptyState" class="empty">案件はまだ登録されていません。</div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>会社名</th>
+                <th>担当者</th>
+                <th>連絡先</th>
+                <th>業種</th>
+                <th>初回接触</th>
+                <th>ステータス</th>
+                <th>提案テーマ</th>
+                <th>面談日</th>
+                <th>実施日</th>
+                <th>次回アクション</th>
+                <th>メモ</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody id="leadTableBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
