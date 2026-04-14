@@ -11,6 +11,12 @@
       <header class="header">
         <h1>BASE GYM24 企業セミナー営業CRM</h1>
         <p>案件の進捗をシンプルに管理</p>
+        <div class="utility-actions">
+          <button type="button" id="exportJsonBtn" class="secondary">バックアップ保存</button>
+          <label class="import-label secondary" for="importJsonInput">バックアップ読込</label>
+          <input type="file" id="importJsonInput" accept="application/json" hidden />
+        </div>
+        <p id="saveNotice" class="save-notice" aria-live="polite"></p>
       </header>
 
       <section class="card">

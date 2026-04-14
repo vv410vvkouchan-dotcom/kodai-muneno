@@ -39,6 +39,30 @@ body {
   color: var(--muted);
 }
 
+.utility-actions {
+  margin-top: 12px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.import-label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.save-notice {
+  margin-top: 8px;
+  min-height: 1.2em;
+  font-size: 0.85rem;
+  color: #0d5b2a;
+}
+
 .card {
   background: var(--card);
   border: 1px solid var(--line);

@@ -6,6 +6,9 @@ const cancelEditBtn = document.getElementById("cancelEdit");
 const filterSelect = document.getElementById("statusFilter");
 const tableBody = document.getElementById("leadTableBody");
 const emptyState = document.getElementById("emptyState");
+const saveNotice = document.getElementById("saveNotice");
+const exportJsonBtn = document.getElementById("exportJsonBtn");
+const importJsonInput = document.getElementById("importJsonInput");
 
 const fields = {
   leadId: document.getElementById("leadId"),
@@ -29,6 +32,16 @@ function loadLeads() {
 
 function saveLeads(leads) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(leads));
+}
+
+function showNotice(message, isError = false) {
+  saveNotice.textContent = message;
+  saveNotice.style.color = isError ? "#b42318" : "#0d5b2a";
+  window.setTimeout(() => {
+    if (saveNotice.textContent === message) {
+      saveNotice.textContent = "";
+    }
+  }, 2500);
 }
 
 function clearForm() {
@@ -115,6 +128,7 @@ form.addEventListener("submit", (event) => {
   saveLeads(leads);
   clearForm();
   renderRows();
+  showNotice("保存しました。");
 });
 
 cancelEditBtn.addEventListener("click", () => {
@@ -136,6 +150,7 @@ tableBody.addEventListener("click", (event) => {
     const nextLeads = leads.filter((lead) => lead.id !== id);
     saveLeads(nextLeads);
     renderRows();
+    showNotice("削除しました。");
     return;
   }
 
@@ -155,3 +170,39 @@ tableBody.addEventListener("click", (event) => {
 
 clearForm();
 renderRows();
+
+exportJsonBtn.addEventListener("click", () => {
+  const leads = loadLeads();
+  const blob = new Blob([JSON.stringify(leads, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  const today = new Date().toISOString().slice(0, 10);
+  link.href = url;
+  link.download = `basegym24-crm-backup-${today}.json`;
+  document.body.append(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+  showNotice("バックアップファイルを保存しました。");
+});
+
+importJsonInput.addEventListener("change", async (event) => {
+  const [file] = event.target.files ?? [];
+  if (!file) return;
+
+  try {
+    const text = await file.text();
+    const parsed = JSON.parse(text);
+    if (!Array.isArray(parsed)) {
+      throw new Error("データ形式が不正です。");
+    }
+    saveLeads(parsed);
+    renderRows();
+    clearForm();
+    showNotice("バックアップを読込しました。");
+  } catch (error) {
+    showNotice(`読込に失敗しました: ${error.message}`, true);
+  } finally {
+    importJsonInput.value = "";
+  }
+});
